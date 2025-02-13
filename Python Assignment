@@ -99,3 +99,37 @@ elif number < 0:
     print("The number is negative.")
 else:
     print("The number is zero.")
+
+
+
+
+#Step 1
+
+print("Welcome to the Personalised User Profile Generator!\nThis program collects and processes user information.")
+# The \n creates a new line, so "This program... appears on the line below"
+
+#Step 2
+
+def process_user_input():
+    #Takes user's full name and performs operations.
+
+    full_name = str (input("Enter your full name: "))
+    age = int(input("Please enter your age: "))
+    height = float(input("Enter your height: "))
+    favorite_programming_language = str(("What's your favorite programming language: "))
+    about_you = str(("A short decription about yourself: "))
+
+# Conversions (as requested)
+    age_float = float(age)
+    height_int = int(height)
+    favorite_number_str = str(123)  # Example:  You'll need to get the actual favorite number from the user if you want to convert it. I've put in a placeholder.
+
+    # Print the converted values 
+    print("\n Converted Values ")
+    print("Age :", age_float, type(age_float))
+    print("Height :", height_int, type(height_int))
+    print("Favorite Number:", favorite_number_str, type(favorite_number_str))
+
+
+
+process_user_input()
