@@ -1,0 +1,110 @@
+def calculate_triangle_area(base, height):
+  """Calculates the area of a triangle given its base and height.
+
+  Args:
+    base: The length of the base of the triangle.
+    height: The perpendicular height of the triangle.
+
+  Returns:
+    The area of the triangle.
+  """
+  area = 0.5 * base * height
+  return area
+
+# Get input from the user
+try:
+  base = float(input("Enter the base of the triangle: "))
+  height = float(input("Enter the height of the triangle: "))
+
+  # Calculate and print the area
+  triangle_area = calculate_triangle_area(base, height)
+  print(f"The area of the triangle with base {base} and height {height} is: {triangle_area}")
+
+except ValueError:
+  print("Invalid input. Please enter numeric values for base and height.")
+
+
+"""This program first defines a function calculate_triangle_area that takes the base and height as arguments and returns the calculated area using the formula:
+
+Area= 
+2
+1
+​
+ ×base×height
+
+Then, it prompts the user to enter the base and height of the triangle. It uses a try-except block to handle potential ValueError if the user enters non-numeric input. Finally, it calls the function to calculate the area and prints the result in a user-friendly format."""
+
+
+def is_divisible(num1, num2):
+  """Checks if num1 is divisible by num2.
+
+  Args:
+    num1: The dividend (the number being divided).
+    num2: The divisor (the number dividing).
+
+  Returns:
+    True if num1 is divisible by num2, False otherwise.
+  """
+  if num2 == 0:
+    return "Cannot divide by zero."
+  return num1 % num2 == 0
+
+# Get input from the user
+try:
+  dividend = int(input("Enter the first integer (dividend): "))
+  divisor = int(input("Enter the second integer (divisor): "))
+
+  # Check for divisibility and print the result
+  result = is_divisible(dividend, divisor)
+  if isinstance(result, str):
+    print(result)
+  elif result:
+    print(f"{dividend} is divisible by {divisor}.")
+  else:
+    print(f"{dividend} is not divisible by {divisor}.")
+
+except ValueError:
+  print("Invalid input. Please enter integer values.")
+
+
+""" This Python function, is_divisible, takes two integer arguments, num1 (the dividend) and num2 (the divisor). It first checks if the divisor is zero, as division by zero is undefined. If the divisor is not zero, it uses the modulo operator (%) to find the remainder of the division. If the remainder is 0, it means num1 is perfectly divisible by num2, and the function returns True. Otherwise, it returns False.
+
+The program then prompts the user to enter two integers. It includes error handling using a try-except block to catch ValueError if the user enters non-integer input. Finally, it calls the is_divisible function with the user's input and prints an appropriate message indicating whether the first number is divisible by the second number.  """
+
+
+
+
+
+
+
+def is_palindrome(number):
+  """Checks if a number is a palindrome."""
+  return str(number) == str(number)[::-1]
+
+def reverse_number(number):
+  """Reverses the digits of a number."""
+  return int(str(number)[::-1])
+
+def palindrome_sum_iteration(num):
+  """Repeatedly reverses a number and adds it to the original until a palindrome is obtained."""
+  if num < 0:
+    return "Input must be a non-negative number."
+
+  count = 0
+  current_num = num
+  while not is_palindrome(current_num):
+    reversed_num = reverse_number(current_num)
+    current_num += reversed_num
+    count += 1
+    if count > 1000:  # Add a safeguard to prevent infinite loops
+      return f"Reached iteration limit ({count}). No palindrome found for {num}."
+  return f"Palindrome {current_num} found after {count} iterations for {num}."
+
+# Get input from the user
+try:
+  number = int(input("Enter a non-negative integer: "))
+  result = palindrome_sum_iteration(number)
+  print(result)
+
+except ValueError:
+  print("Invalid input. Please enter a non-negative integer.")
