@@ -1,0 +1,130 @@
+from typing import List, Dict, Union
+from collections import defaultdict
+
+# ----- Core Classes -----
+
+class Participant:
+    def __init__(self, participant_id: int, name: str):
+        self.id = participant_id
+        self.name = name
+
+    def __repr__(self):
+        return self.name
+
+class Team:
+    def __init__(self, team_id: int, name: str):
+        self.id = team_id
+        self.name = name
+        self.members: List[Participant] = []
+
+    def add_member(self, participant: Participant):
+        if len(self.members) >= 5:
+            raise ValueError("A team can only have 5 members.")
+        self.members.append(participant)
+
+    def __repr__(self):
+        return f"{self.name}"
+
+class Event:
+    def __init__(self, event_id: int, name: str, event_type: str, scoring_method: str):
+        self.id = event_id
+        self.name = name
+        self.event_type = event_type  # 'individual' or 'team'
+        self.scoring_method = scoring_method
+        self.results: Dict[Union[Participant, Team], float] = {}
+
+    def record_result(self, competitor: Union[Participant, Team], value: float):
+        self.results[competitor] = value
+
+    def rank_results(self):
+        reverse = self.scoring_method != "time"  # lower time is better
+        return sorted(self.results.items(), key=lambda x: x[1], reverse=reverse)
+
+    def __repr__(self):
+        return self.name
+
+class Tournament:
+    def __init__(self):
+        self.participants: Dict[int, Participant] = {}
+        self.teams: Dict[int, Team] = {}
+        self.events: Dict[int, Event] = {}
+        self.points_table = {1: 10, 2: 8, 3: 6, 4: 4, 5: 2}
+        self.leaderboard: Dict[Union[Participant, Team], int] = defaultdict(int)
+
+    def add_participant(self, participant: Participant):
+        self.participants[participant.id] = participant
+
+    def add_team(self, team: Team):
+        self.teams[team.id] = team
+
+    def add_event(self, event: Event):
+        self.events[event.id] = event
+
+    def record_event_result(self, event_id: int, competitor: Union[Participant, Team], result_value: float):
+        event = self.events.get(event_id)
+        if event:
+            event.record_result(competitor, result_value)
+
+    def calculate_points(self):
+        self.leaderboard.clear()
+        for event in self.events.values():
+            rankings = event.rank_results()
+            for rank, (competitor, _) in enumerate(rankings, 1):
+                points = self.points_table.get(rank, 0)
+                self.leaderboard[competitor] += points
+
+    def display_leaderboard(self):
+        print("\n🏆 Leaderboard:")
+        sorted_lb = sorted(self.leaderboard.items(), key=lambda x: x[1], reverse=True)
+        for i, (entity, points) in enumerate(sorted_lb, 1):
+            print(f"{i}. {entity}: {points} points")
+
+# ----- Setup Tournament -----
+
+tournament = Tournament()
+
+# Add individual participants
+individual_names = [
+    "Olivia", "Liam", "Sophia", "Noah", "Ava", "Elijah", "Isabella", "Lucas", "Amelia", "Mason",
+    "Charlotte", "Benjamin", "Harper", "James", "Evelyn", "William", "Abigail", "Henry", "Ella", "Alexander"
+]
+
+for i, name in enumerate(individual_names, start=1):
+    tournament.add_participant(Participant(i, name))
+
+# Create team members not in individual list
+team_members = {
+    "Team A": ["Ethan", "Julian", "Scarlett", "Zoe", "Leo"],
+    "Team B": ["Samantha", "Daniel", "Victoria", "David", "Grace"],
+    "Team C": ["Joseph", "Samuel", "Chloe", "Lily", "Matthew"],
+    "Team D": ["Andrew", "Nora", "Gabriel", "Caleb", "Hans"]
+}
+
+team_id = 1
+for team_name, members in team_members.items():
+    team = Team(team_id, team_name)
+    for member_name in members:
+        team.add_member(Participant(100 + team_id * 10 + members.index(member_name), member_name))
+    tournament.add_team(team)
+    team_id += 1
+
+# Add sample events
+event1 = Event(1, "Archery Challenge", "individual", "score")
+event2 = Event(2, "Tug-of-War", "team", "bracket")
+
+tournament.add_event(event1)
+tournament.add_event(event2)
+
+# Record mock results
+# Individual scores (higher is better)
+import random
+for participant in tournament.participants.values():
+    event1.record_result(participant, random.randint(30, 60))
+
+# Team bracket results (lower number = higher rank)
+for i, team in enumerate(tournament.teams.values(), start=1):
+    event2.record_result(team, i)
+
+# Calculate and show leaderboard
+tournament.calculate_points()
+tournament.display_leaderboard()
